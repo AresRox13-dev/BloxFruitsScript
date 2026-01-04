@@ -1,3 +1,6 @@
+-- Blox Fruits Advanced Penetration Testing Suite v3.5
+-- Optimized & Professional Edition
+-- Password: LindonDross13!
 local Services = {
 Players = game:GetService("Players"),
 RunService = game:GetService("RunService"),
@@ -11,20 +14,14 @@ VirtualUser = game:GetService("VirtualUser")
 }
 local LocalPlayer = Services.Players.LocalPlayer
 local Camera = workspace.CurrentCamera
--- ===============================================
--- CONFIGURATION
--- ===============================================
 local Config = {
--- Core
 Authenticated = false,
 Password = "LindonDross13!",
--- Farming
 AutoChest = false,
 AutoFruit = false,
 AutoBoss = false,
 AutoQuest = false,
 AutoMastery = false,
--- Combat
 KillAura = false,
 KillAuraRange = 50,
 FastAttack = false,
@@ -32,7 +29,6 @@ AutoHaki = false,
 AutoObservation = false,
 NoStun = false,
 InfiniteEnergy = false,
--- Movement
 TeleportSpeed = 300,
 SpeedRandomization = true,
 WalkSpeed = false,
@@ -41,7 +37,6 @@ InfiniteJump = false,
 Flight = false,
 FlightSpeed = 100,
 NoClip = false,
--- Visual
 ESP = false,
 ESPChests = true,
 ESPFruits = true,
@@ -50,15 +45,11 @@ ESPBosses = true,
 ESPDistance = true,
 FullBright = false,
 RemoveFog = false,
--- Safety
 SafeMode = true,
 AntiAFK = true,
 AntiKick = true,
 AutoRejoin = true,
 }
--- ===============================================
--- STATE MANAGEMENT
--- ===============================================
 local State = {
 Stats = {
 SessionStart = tick(),
@@ -92,9 +83,6 @@ ESP = {},
 Connections = {},
 UI = {}
 }
--- ===============================================
--- BLOX FRUITS GAME REFERENCES
--- ===============================================
 local GameData = {
 Workspace = workspace,
 NPCs = workspace:FindFirstChild("NPCs") or workspace:FindFirstChild("Enemies"),
@@ -118,9 +106,6 @@ QuestGivers = {
 "Haunted Castle", "Sea of Treats", "Cake Land", "Chocolate"
 }
 }
--- ===============================================
--- UTILITY FUNCTIONS
--- ===============================================
 local function log(message, color)
 print(string.format("[%s] %s", os.date("%H:%M:%S"), message))
 end
@@ -142,9 +127,6 @@ end
 local function getMagnitude(pos1, pos2)
 return (pos1 - pos2).Magnitude
 end
--- ===============================================
--- ENHANCED HAKI SYSTEM
--- ===============================================
 local function enableHaki()
 if not Config.AutoHaki then return end
 if tick() - State.Combat.LastHakiToggle < 5 then return end
@@ -158,27 +140,20 @@ end
 end
 end
 State.Combat.LastHakiToggle = tick()
-pcall(function()
 Services.VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.J, false, game)
 task.wait(0.05)
 Services.VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.J, false, game)
-end)
 State.Combat.HakiEnabled = true
 end
 local function enableObservation()
 if not Config.AutoObservation then return end
 if tick() - State.Combat.LastObsToggle < 5 then return end
 State.Combat.LastObsToggle = tick()
-pcall(function()
 Services.VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.E, false, game)
 task.wait(0.05)
 Services.VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.E, false, game)
-end)
 State.Combat.ObsEnabled = true
 end
--- ===============================================
--- IMPROVED TELEPORT SYSTEM
--- ===============================================
 local lastTeleportTime = 0
 local function smoothTeleport(targetCFrame, speed)
 if State.Active.Teleporting then return false end
@@ -197,20 +172,16 @@ log("Teleport distance too large: " .. math.floor(distance))
 State.Active.Teleporting = false
 return false
 end
-pcall(function()
 if humanoid then
 humanoid:ChangeState(Enum.HumanoidStateType.Flying)
 humanoid.PlatformStand = false
 end
-end)
 local char = getCharacter()
-pcall(function()
 for _, part in pairs(char:GetDescendants()) do
 if part:IsA("BasePart") then
 part.CanCollide = false
 end
 end
-end)
 local startTime = tick()
 local startHeight = root.Position.Y
 local targetHeight = targetCFrame.Position.Y
@@ -236,44 +207,29 @@ root.Position.X + direction.X * currentSpeed * 0.1,
 maintainHeight,
 root.Position.Z + direction.Z * currentSpeed * 0.1
 )
-pcall(function()
 root.CFrame = CFrame.new(adjustedTarget)
-end)
 else
-pcall(function()
 root.CFrame = root.CFrame + direction * (currentSpeed * 0.1)
-end)
 end
-pcall(function()
 root.Velocity = Vector3.new(0, 0, 0)
 root.AssemblyLinearVelocity = Vector3.new(0, 0, 0)
-end)
 task.wait()
 end
-pcall(function()
 root.CFrame = targetCFrame
 root.Velocity = Vector3.new(0, 0, 0)
-end)
 task.wait(0.15)
-pcall(function()
 for _, part in pairs(char:GetDescendants()) do
 if part:IsA("BasePart") then
 part.CanCollide = true
 end
 end
-end)
-pcall(function()
 if humanoid then
 humanoid:ChangeState(Enum.HumanoidStateType.Landed)
 end
-end)
 lastTeleportTime = tick()
 State.Active.Teleporting = false
 return true
 end
--- ===============================================
--- OBJECT SCANNING
--- ===============================================
 local function scanChests()
 State.Cache.Chests = {}
 for _, obj in pairs(workspace:GetDescendants()) do
@@ -399,9 +355,6 @@ end
 end
 return nearest, nearestDist
 end
--- ===============================================
--- COMBAT SYSTEM
--- ===============================================
 local lastAttackTime = 0
 local attackCooldown = 0.1
 local function performAttack()
@@ -410,14 +363,10 @@ local now = tick()
 if now - lastAttackTime < (Config.FastAttack and 0.05 or attackCooldown) then return false end
 local tool = getCharacter():FindFirstChildOfClass("Tool")
 if tool then
-pcall(function()
 tool:Activate()
-end)
 lastAttackTime = now
 if GameData.CombatRemote then
-pcall(function()
 GameData.CombatRemote:InvokeServer("weaponHit", tool.Name)
-end)
 end
 return true
 end
@@ -435,12 +384,10 @@ local mobRoot = mob:FindFirstChild("HumanoidRootPart")
 if humanoid and humanoid.Health > 0 and mobRoot then
 local dist = getMagnitude(targetPos, mobRoot.Position)
 if dist <= radius then
-pcall(function()
 mobRoot.CFrame = CFrame.new(targetPos + Vector3.new(math.random(-5, 5), 0, math.random(-5, 5)))
 mobRoot.CanCollide = false
 humanoid.WalkSpeed = 0
 humanoid:ChangeState(Enum.HumanoidStateType.Physics)
-end)
 end
 end
 end
@@ -452,20 +399,14 @@ local root = getRoot()
 local enemyRoot = enemy.Root
 if not root or not enemyRoot then return false end
 local behindPos = enemyRoot.CFrame * CFrame.new(0, 0, 7)
-pcall(function()
 root.CFrame = behindPos
-end)
 enableHaki()
 enableObservation()
 return performAttack()
 end
--- ===============================================
--- FARMING LOOPS
--- ===============================================
 local function chestFarmLoop()
 while task.wait(0.5) do
 if Config.AutoChest and isAlive() and not State.Active.Teleporting then
-pcall(function()
 if #State.Cache.Chests == 0 then
 scanChests()
 task.wait(2)
@@ -491,19 +432,23 @@ if click then
 fireclickdetector(click)
 end
 State.Stats.ChestsCollected = State.Stats.ChestsCollected + 1
+for i, chest in pairs(State.Cache.Chests) do
+if chest == nearest then
+table.remove(State.Cache.Chests, i)
+break
+end
+end
 end
 end
 else
 task.wait(3)
 end
-end)
 end
 end
 end
 local function fruitFarmLoop()
 while task.wait(0.5) do
 if Config.AutoFruit and isAlive() and not State.Active.Teleporting then
-pcall(function()
 if #State.Cache.Fruits == 0 then
 scanFruits()
 task.wait(2)
@@ -532,19 +477,23 @@ fireclickdetector(click)
 end
 task.wait(0.2)
 end
+for i, fruit in pairs(State.Cache.Fruits) do
+if fruit == nearest then
+table.remove(State.Cache.Fruits, i)
+break
+end
+end
 end
 end
 else
 task.wait(3)
 end
-end)
 end
 end
 end
 local function bossFarmLoop()
 while task.wait(0.3) do
 if Config.AutoBoss and isAlive() then
-pcall(function()
 if #State.Cache.Bosses == 0 then
 scanBosses()
 task.wait(3)
@@ -563,18 +512,22 @@ task.wait(0.05)
 end
 if nearest.Humanoid.Health <= 0 then
 State.Stats.BossesKilled = State.Stats.BossesKilled + 1
+for i, boss in pairs(State.Cache.Bosses) do
+if boss == nearest then
+table.remove(State.Cache.Bosses, i)
+break
+end
+end
 end
 else
 task.wait(3)
 end
-end)
 end
 end
 end
 local function masteryFarmLoop()
 while task.wait(0.2) do
 if Config.AutoMastery and isAlive() then
-pcall(function()
 local npcs = GameData.NPCs or workspace
 local root = getRoot()
 if not root then return end
@@ -601,14 +554,12 @@ State.Stats.EnemiesKilled = State.Stats.EnemiesKilled + 1
 State.Stats.MasteryGained = State.Stats.MasteryGained + 1
 end
 end
-end)
 end
 end
 end
 local function questFarmLoop()
 while task.wait(2) do
 if Config.AutoQuest and isAlive() then
-pcall(function()
 local playerGui = LocalPlayer:FindFirstChild("PlayerGui")
 local hasActiveQuest = false
 if playerGui then
@@ -653,14 +604,12 @@ Config.AutoMastery = false
 State.Stats.QuestsCompleted = State.Stats.QuestsCompleted + 1
 end
 end
-end)
 end
 end
 end
 local function killAuraLoop()
 while task.wait(0.15) do
 if Config.KillAura and isAlive() then
-pcall(function()
 local root = getRoot()
 if not root then return end
 local npcs = GameData.NPCs or workspace
@@ -679,13 +628,9 @@ end
 end
 end
 end
-end)
 end
 end
 end
--- ===============================================
--- ENHANCED MOVEMENT SYSTEMS
--- ===============================================
 local walkSpeedConnection
 local function setupWalkSpeed()
 if walkSpeedConnection then walkSpeedConnection:Disconnect() end
@@ -704,7 +649,6 @@ local function setupInfiniteEnergy()
 if energyConnection then energyConnection:Disconnect() end
 energyConnection = Services.RunService.Heartbeat:Connect(function()
 if Config.InfiniteEnergy and isAlive() then
-pcall(function()
 local playerData = LocalPlayer:FindFirstChild("Data")
 if playerData then
 local energy = playerData:FindFirstChild("Energy")
@@ -712,7 +656,6 @@ if energy then
 energy.Value = 10000
 end
 end
-end)
 end
 end)
 table.insert(State.Connections, energyConnection)
@@ -722,7 +665,6 @@ local function setupNoStun()
 if stunConnection then stunConnection:Disconnect() end
 stunConnection = Services.RunService.Heartbeat:Connect(function()
 if Config.NoStun and isAlive() then
-pcall(function()
 local humanoid = getHumanoid()
 if humanoid then
 if humanoid:GetState() == Enum.HumanoidStateType.FallingDown or humanoid:GetState() == Enum.HumanoidStateType.Ragdoll then
@@ -732,7 +674,6 @@ if humanoid.PlatformStand then
 humanoid.PlatformStand = false
 end
 end
-end)
 end
 end)
 table.insert(State.Connections, stunConnection)
@@ -813,12 +754,9 @@ end
 end)
 table.insert(State.Connections, lightingConnection)
 end
--- ===============================================
--- ESP SYSTEM
--- ===============================================
 local function clearESP()
 for _, esp in pairs(State.ESP) do
-pcall(function() esp:Destroy() end)
+esp:Destroy()
 end
 State.ESP = {}
 end
@@ -829,7 +767,7 @@ billboard.Adornee = part
 billboard.Size = UDim2.new(0, 100, 0, 50)
 billboard.StudsOffset = Vector3.new(0, 3, 0)
 billboard.AlwaysOnTop = true
-billboard.Parent = LocalPlayer.PlayerGui -- Changed for compatibility
+billboard.Parent = LocalPlayer.PlayerGui
 local label = Instance.new("TextLabel")
 label.Size = UDim2.new(1, 0, 1, 0)
 label.BackgroundTransparency = 1
@@ -895,25 +833,19 @@ end
 local function espUpdateLoop()
 while task.wait(2) do
 if Config.ESP then
-pcall(updateESP)
+updateESP()
 end
 end
 end
--- ===============================================
--- MISC FEATURES
--- ===============================================
 local function setupAntiAFK()
 LocalPlayer.Idled:Connect(function()
 if Config.AntiAFK then
-pcall(function()
 Services.VirtualUser:CaptureController()
 Services.VirtualUser:ClickButton2(Vector2.new())
-end)
 end
 end)
 end
 local function setupAntiKick()
-pcall(function()
 local mt = getrawmetatable(game)
 local oldNamecall = mt.__namecall
 setreadonly(mt, false)
@@ -926,21 +858,15 @@ end
 return oldNamecall(self, ...)
 end)
 setreadonly(mt, true)
-end)
 end
 local function setupAutoRejoin()
 game:GetService("CoreGui").DescendantAdded:Connect(function(descendant)
 if Config.AutoRejoin and (descendant.Name == "ErrorPrompt" or descendant.Name == "ErrorMessage") then
 task.wait(2)
-pcall(function()
 game:GetService("TeleportService"):Teleport(game.PlaceId, LocalPlayer)
-end)
 end
 end)
 end
--- ===============================================
--- NOTIFICATION SYSTEM
--- ===============================================
 local notifications = {}
 local function createNotification(title, message, duration)
 duration = duration or 3
@@ -986,13 +912,9 @@ msgLabel.TextYAlignment = Enum.TextYAlignment.Top
 msgLabel.TextWrapped = true
 msgLabel.Parent = notif
 table.insert(notifications, notif)
-pcall(function()
 Services.TweenService:Create(notif, TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Position = UDim2.new(1, -330, 1, -100 - (#notifications * 100)) }):Play()
-end)
 task.delay(duration, function()
-pcall(function()
 Services.TweenService:Create(notif, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.In), { Position = UDim2.new(1, 10, notif.Position.Y.Scale, notif.Position.Y.Offset) }):Play()
-end)
 task.wait(0.3)
 notif:Destroy()
 for i, v in pairs(notifications) do
@@ -1003,15 +925,12 @@ end
 end
 end)
 end
--- ===============================================
--- PASSWORD SYSTEM
--- ===============================================
 local function createPasswordScreen()
 local gui = Instance.new("ScreenGui")
 gui.Name = "PasswordScreen"
 gui.ResetOnSpawn = false
 gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-gui.Parent = LocalPlayer.PlayerGui  -- Changed for compatibility
+gui.Parent = LocalPlayer.PlayerGui
 local blur = Instance.new("Frame")
 blur.Size = UDim2.new(1, 0, 1, 0)
 blur.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
@@ -1087,9 +1006,7 @@ error.Parent = frame
 local function checkPassword()
 if textbox.Text == Config.Password then
 Config.Authenticated = true
-pcall(function()
 Services.TweenService:Create(frame, TweenInfo.new(0.3), { BackgroundColor3 = Color3.fromRGB(40, 150, 80) }):Play()
-end)
 error.TextColor3 = Color3.fromRGB(100, 255, 100)
 error.Text = "✓ Access Granted - Loading..."
 task.wait(0.7)
@@ -1099,9 +1016,7 @@ else
 error.Text = "✗ Incorrect Password"
 local originalPos = frame.Position
 for i = 1, 4 do
-pcall(function()
 Services.TweenService:Create(frame, TweenInfo.new(0.08), { Position = originalPos + UDim2.new(0, 12 * (i % 2 == 0 and -1 or 1), 0, 0) }):Play()
-end)
 task.wait(0.08)
 end
 frame.Position = originalPos
@@ -1116,15 +1031,12 @@ end
 end)
 textbox:CaptureFocus()
 end
--- ===============================================
--- ENHANCED UI CREATION
--- ===============================================
-function initializeUI()
+local function initializeUI()
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "PenTestUI"
 ScreenGui.ResetOnSpawn = false
 ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-ScreenGui.Parent = LocalPlayer.PlayerGui  -- Changed for compatibility
+ScreenGui.Parent = LocalPlayer.PlayerGui
 State.UI.ScreenGui = ScreenGui
 local MainFrame = Instance.new("Frame")
 MainFrame.Name = "MainFrame"
@@ -1309,9 +1221,7 @@ btn.Parent = toggle
 Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 10)
 btn.MouseButton1Click:Connect(function()
 Config[configKey] = not Config[configKey]
-pcall(function()
 Services.TweenService:Create(btn, TweenInfo.new(0.2), { BackgroundColor3 = Config[configKey] and Color3.fromRGB(50, 200, 100) or Color3.fromRGB(180, 50, 50) }):Play()
-end)
 btn.Text = Config[configKey] and "ON" or "OFF"
 if callback then
 callback(Config[configKey])
@@ -1384,12 +1294,9 @@ btn.Font = Enum.Font.SourceSansBold
 btn.TextSize = 16
 btn.Parent = parent
 Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 10)
-btn.MouseButton1Click:Connect(function()
-pcall(callback)
-end)
+btn.MouseButton1Click:Connect(callback)
 return btn
 end
--- Create Tabs
 local homeTab = createTab("Home", "🏠", 0)
 local farmTab = createTab("Farming", "🌾", 1)
 local combatTab = createTab("Combat", "⚔️", 2)
@@ -1440,7 +1347,6 @@ info.TextXAlignment = Enum.TextXAlignment.Left
 info.TextYAlignment = Enum.TextYAlignment.Top
 info.Parent = homeTab
 Instance.new("UIPadding", info).PaddingLeft = UDim.new(0, 8)
--- FARMING TAB
 createSection(farmTab, "🎯 Auto Farming")
 createToggle(farmTab, "Auto Chest Farm", "AutoChest", function(enabled)
 if enabled then
@@ -1489,7 +1395,6 @@ Config.AutoQuest = false
 Config.AutoMastery = false
 createNotification("Stop", "All farming stopped!", 2)
 end)
--- COMBAT TAB
 createSection(combatTab, "⚔️ Combat Features")
 createToggle(combatTab, "Kill Aura", "KillAura")
 createSlider(combatTab, "Kill Aura Range", 10, 150, "KillAuraRange")
@@ -1498,7 +1403,6 @@ createToggle(combatTab, "Auto Haki (J Key)", "AutoHaki")
 createToggle(combatTab, "Auto Observation (E Key)", "AutoObservation")
 createToggle(combatTab, "No Stun", "NoStun")
 createToggle(combatTab, "Infinite Energy", "InfiniteEnergy")
--- MOVEMENT TAB
 createSection(moveTab, "🏃 Movement")
 createToggle(moveTab, "Custom Walk Speed", "WalkSpeed")
 createSlider(moveTab, "Walk Speed", 16, 250, "WalkSpeedValue")
@@ -1506,7 +1410,6 @@ createToggle(moveTab, "Infinite Jump", "InfiniteJump")
 createToggle(moveTab, "Flight Mode", "Flight")
 createSlider(moveTab, "Flight Speed", 50, 300, "FlightSpeed")
 createToggle(moveTab, "No Clip", "NoClip")
--- VISUAL TAB
 createSection(visualTab, "👁️ ESP")
 createToggle(visualTab, "Enable ESP", "ESP", function(enabled)
 if enabled then
@@ -1523,7 +1426,6 @@ createToggle(visualTab, "Show Distance", "ESPDistance", updateESP)
 createSection(visualTab, "🌟 Effects")
 createToggle(visualTab, "Full Bright", "FullBright")
 createToggle(visualTab, "Remove Fog", "RemoveFog")
--- MISC TAB
 createSection(miscTab, "🛡️ Protection")
 createToggle(miscTab, "Anti AFK", "AntiAFK")
 createToggle(miscTab, "Anti Kick", "AntiKick")
@@ -1557,7 +1459,6 @@ for _, conn in pairs(State.Connections) do
 conn:Disconnect()
 end
 end)
--- Draggable
 local dragging = false
 local dragInput, mousePos, framePos
 titleBar.InputBegan:Connect(function(input)
@@ -1586,7 +1487,6 @@ if input.UserInputType == Enum.UserInputType.MouseButton1 then
 dragging = false
 end
 end)
--- Stats Update
 task.spawn(function()
 while ScreenGui and ScreenGui.Parent do
 local uptime = math.floor(tick() - State.Stats.SessionStart)
@@ -1602,7 +1502,6 @@ statLabels.quests.Text = "📜 Quests: " .. State.Stats.QuestsCompleted
 task.wait(1)
 end
 end)
--- Initialize
 setupWalkSpeed()
 setupInfiniteEnergy()
 setupNoStun()
@@ -1616,9 +1515,6 @@ setupAutoRejoin()
 createNotification("Welcome", "Suite v3.5 loaded successfully!", 3)
 log("UI initialized")
 end
--- ===============================================
--- KEYBINDS
--- ===============================================
 Services.UserInputService.InputBegan:Connect(function(input, processed)
 if processed then return end
 if input.KeyCode == Enum.KeyCode.RightControl then
@@ -1635,9 +1531,6 @@ Config.Flight = not Config.Flight
 createNotification("Flight", Config.Flight and "Enabled" or "Disabled", 2)
 end
 end)
--- ===============================================
--- CHARACTER HANDLER
--- ===============================================
 LocalPlayer.CharacterAdded:Connect(function(character)
 character:WaitForChild("Humanoid").Died:Connect(function()
 State.Active.Teleporting = false
@@ -1646,9 +1539,6 @@ State.Combat.HakiEnabled = false
 State.Combat.ObsEnabled = false
 end)
 end)
--- ===============================================
--- INITIALIZATION
--- ===============================================
 local function startMainLoops()
 task.spawn(chestFarmLoop)
 task.spawn(fruitFarmLoop)
